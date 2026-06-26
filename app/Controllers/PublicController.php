@@ -8,19 +8,21 @@ use App\Core\Cache;
 use App\Core\Request;
 use App\Core\Response;
 use App\Exceptions\NotFoundException;
+use App\Repositories\AnalyticsRepository;
 use App\Repositories\PublicRepository;
-use App\Repositories\WebsiteRepository;
 use App\Services\SitemapService;
 
 class PublicController
 {
     private PublicRepository $repo;
     private SitemapService $sitemapService;
+    private AnalyticsRepository $analytics;
 
     public function __construct()
     {
         $this->repo           = new PublicRepository();
         $this->sitemapService = new SitemapService();
+        $this->analytics      = new AnalyticsRepository();
     }
 
     private function resolveWebsiteId(Request $request): int
@@ -63,6 +65,10 @@ class PublicController
             return $this->repo->posts($websiteId, $filters);
         }, ["posts:{$websiteId}"]);
 
+        if (!empty($filters['search'])) {
+            $this->analytics->recordSearch($websiteId, $filters['search'], $result['total']);
+        }
+
         return Response::paginated(
             $result['posts'],
             $result['total'],
@@ -85,8 +91,8 @@ class PublicController
             throw new NotFoundException('Post not found.');
         }
 
-        // Increment views without blocking the response
-        $this->repo->incrementViews((int) $post['id']);
+        $ipHash = hash('sha256', $_SERVER['REMOTE_ADDR'] ?? 'unknown');
+        $this->analytics->recordView((int) $post['id'], $websiteId, $ipHash);
 
         $related = $this->repo->related($websiteId, (int) $post['id'], (int) $post['category_id']);
         $post['related'] = $related;

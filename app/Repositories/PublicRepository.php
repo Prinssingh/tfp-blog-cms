@@ -130,11 +130,6 @@ class PublicRepository
         return $stmt->fetchAll();
     }
 
-    public function incrementViews(int $postId): void
-    {
-        $this->db->prepare('UPDATE posts SET views = views + 1 WHERE id = ?')->execute([$postId]);
-    }
-
     // ── Categories ───────────────────────────────────────────────────────────
 
     public function categories(int $websiteId): array

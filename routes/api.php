@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Controllers\AnalyticsController;
 use App\Controllers\AuthController;
 use App\Controllers\CategoryController;
 use App\Controllers\HealthController;
@@ -114,6 +115,12 @@ $router->group('api/v1', [], function ($router) {
         $router->get('/',       [RedirectController::class, 'index']);
         $router->post('/',      [RedirectController::class, 'store']);
         $router->delete('{id}', [RedirectController::class, 'destroy']);
+    });
+
+    // Analytics — auth required
+    $router->group('analytics', ['middleware' => [AuthMiddleware::class]], function ($router) {
+        $router->get('summary',        [AnalyticsController::class, 'summary']);
+        $router->get('posts/{id}/views', [AnalyticsController::class, 'postViews']);
     });
 
     // Public — no auth required
