@@ -6,6 +6,7 @@ use App\Controllers\AuthController;
 use App\Controllers\CategoryController;
 use App\Controllers\HealthController;
 use App\Controllers\MediaController;
+use App\Controllers\PostController;
 use App\Controllers\RoleController;
 use App\Controllers\TagController;
 use App\Controllers\UserController;
@@ -80,11 +81,23 @@ $router->group('api/v1', [], function ($router) {
 
     // Media
     $router->group('media', ['middleware' => [AuthMiddleware::class]], function ($router) {
-        $router->get('/',          [MediaController::class, 'index']);
-        $router->post('upload',    [MediaController::class, 'upload']);
-        $router->get('{id}',       [MediaController::class, 'show']);
-        $router->put('{id}',       [MediaController::class, 'updateMeta']);
-        $router->delete('{id}',    [MediaController::class, 'destroy']);
+        $router->get('/',       [MediaController::class, 'index']);
+        $router->post('upload', [MediaController::class, 'upload']);
+        $router->get('{id}',    [MediaController::class, 'show']);
+        $router->put('{id}',    [MediaController::class, 'updateMeta']);
+        $router->delete('{id}', [MediaController::class, 'destroy']);
+    });
+
+    // Posts
+    $router->group('posts', ['middleware' => [AuthMiddleware::class]], function ($router) {
+        $router->get('/',                    [PostController::class, 'index']);
+        $router->post('/',                   [PostController::class, 'store']);
+        $router->get('{id}',                 [PostController::class, 'show']);
+        $router->put('{id}',                 [PostController::class, 'update']);
+        $router->delete('{id}',              [PostController::class, 'destroy']);
+        $router->post('{id}/publish',        [PostController::class, 'publish']);
+        $router->post('{id}/schedule',       [PostController::class, 'schedule']);
+        $router->post('{id}/duplicate',      [PostController::class, 'duplicate']);
     });
 
 });
