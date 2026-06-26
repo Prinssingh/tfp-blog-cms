@@ -5,10 +5,12 @@ declare(strict_types=1);
 use App\Controllers\AuthController;
 use App\Controllers\HealthController;
 use App\Controllers\RoleController;
+use App\Controllers\UserController;
 use App\Controllers\WebsiteController;
 use App\Core\Application;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\SuperAdminMiddleware;
+use App\Middleware\WebsiteAdminMiddleware;
 
 $router = Application::getInstance()->router();
 
@@ -39,11 +41,20 @@ $router->group('api/v1', [], function ($router) {
 
     // Websites — super admin only
     $router->group('websites', ['middleware' => [AuthMiddleware::class, SuperAdminMiddleware::class]], function ($router) {
-        $router->get('/',      [WebsiteController::class, 'index']);
-        $router->post('/',     [WebsiteController::class, 'store']);
-        $router->get('{id}',   [WebsiteController::class, 'show']);
-        $router->put('{id}',   [WebsiteController::class, 'update']);
-        $router->delete('{id}',[WebsiteController::class, 'destroy']);
+        $router->get('/',       [WebsiteController::class, 'index']);
+        $router->post('/',      [WebsiteController::class, 'store']);
+        $router->get('{id}',    [WebsiteController::class, 'show']);
+        $router->put('{id}',    [WebsiteController::class, 'update']);
+        $router->delete('{id}', [WebsiteController::class, 'destroy']);
+    });
+
+    // Users — website admin and above
+    $router->group('users', ['middleware' => [AuthMiddleware::class, WebsiteAdminMiddleware::class]], function ($router) {
+        $router->get('/',       [UserController::class, 'index']);
+        $router->post('/',      [UserController::class, 'store']);
+        $router->get('{id}',    [UserController::class, 'show']);
+        $router->put('{id}',    [UserController::class, 'update']);
+        $router->delete('{id}', [UserController::class, 'destroy']);
     });
 
 });
