@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Controllers\AuthController;
 use App\Controllers\CategoryController;
 use App\Controllers\HealthController;
+use App\Controllers\MediaController;
 use App\Controllers\RoleController;
 use App\Controllers\TagController;
 use App\Controllers\UserController;
@@ -75,6 +76,15 @@ $router->group('api/v1', [], function ($router) {
         $router->get('{id}',    [TagController::class, 'show']);
         $router->put('{id}',    [TagController::class, 'update']);
         $router->delete('{id}', [TagController::class, 'destroy']);
+    });
+
+    // Media
+    $router->group('media', ['middleware' => [AuthMiddleware::class]], function ($router) {
+        $router->get('/',          [MediaController::class, 'index']);
+        $router->post('upload',    [MediaController::class, 'upload']);
+        $router->get('{id}',       [MediaController::class, 'show']);
+        $router->put('{id}',       [MediaController::class, 'updateMeta']);
+        $router->delete('{id}',    [MediaController::class, 'destroy']);
     });
 
 });
