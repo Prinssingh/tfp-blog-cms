@@ -7,7 +7,9 @@ use App\Controllers\CategoryController;
 use App\Controllers\HealthController;
 use App\Controllers\MediaController;
 use App\Controllers\PostController;
+use App\Controllers\RedirectController;
 use App\Controllers\RoleController;
+use App\Controllers\SeoController;
 use App\Controllers\TagController;
 use App\Controllers\UserController;
 use App\Controllers\WebsiteController;
@@ -90,14 +92,27 @@ $router->group('api/v1', [], function ($router) {
 
     // Posts
     $router->group('posts', ['middleware' => [AuthMiddleware::class]], function ($router) {
-        $router->get('/',                    [PostController::class, 'index']);
-        $router->post('/',                   [PostController::class, 'store']);
-        $router->get('{id}',                 [PostController::class, 'show']);
-        $router->put('{id}',                 [PostController::class, 'update']);
-        $router->delete('{id}',              [PostController::class, 'destroy']);
-        $router->post('{id}/publish',        [PostController::class, 'publish']);
-        $router->post('{id}/schedule',       [PostController::class, 'schedule']);
-        $router->post('{id}/duplicate',      [PostController::class, 'duplicate']);
+        $router->get('/',               [PostController::class, 'index']);
+        $router->post('/',              [PostController::class, 'store']);
+        $router->get('{id}',            [PostController::class, 'show']);
+        $router->put('{id}',            [PostController::class, 'update']);
+        $router->delete('{id}',         [PostController::class, 'destroy']);
+        $router->post('{id}/publish',   [PostController::class, 'publish']);
+        $router->post('{id}/schedule',  [PostController::class, 'schedule']);
+        $router->post('{id}/duplicate', [PostController::class, 'duplicate']);
+    });
+
+    // SEO metadata
+    $router->group('seo', ['middleware' => [AuthMiddleware::class]], function ($router) {
+        $router->get('{entity_type}/{entity_id}', [SeoController::class, 'show']);
+        $router->put('{entity_type}/{entity_id}', [SeoController::class, 'upsert']);
+    });
+
+    // Redirects
+    $router->group('redirects', ['middleware' => [AuthMiddleware::class]], function ($router) {
+        $router->get('/',       [RedirectController::class, 'index']);
+        $router->post('/',      [RedirectController::class, 'store']);
+        $router->delete('{id}', [RedirectController::class, 'destroy']);
     });
 
 });
