@@ -73,7 +73,7 @@ class Request
 
     public function setParams(array $params): void
     {
-        $this->params = $params;
+        $this->params = array_merge($this->params, $params);
     }
 
     public function header(string $key, mixed $default = null): mixed

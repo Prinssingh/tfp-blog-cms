@@ -26,10 +26,11 @@ class AuthMiddleware
             throw new UnauthorizedException('Invalid or expired token.');
         }
 
-        $request->setParams(array_merge(
-            ['_auth' => $payload],
-            [],
-        ));
+        if (isset($payload->type) && $payload->type === 'refresh') {
+            throw new UnauthorizedException('Cannot use refresh token as access token.');
+        }
+
+        $request->setParams(['_auth' => $payload]);
 
         return $next($request);
     }
