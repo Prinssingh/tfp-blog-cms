@@ -3,8 +3,10 @@
 declare(strict_types=1);
 
 use App\Controllers\AuthController;
+use App\Controllers\CategoryController;
 use App\Controllers\HealthController;
 use App\Controllers\RoleController;
+use App\Controllers\TagController;
 use App\Controllers\UserController;
 use App\Controllers\WebsiteController;
 use App\Core\Application;
@@ -55,6 +57,24 @@ $router->group('api/v1', [], function ($router) {
         $router->get('{id}',    [UserController::class, 'show']);
         $router->put('{id}',    [UserController::class, 'update']);
         $router->delete('{id}', [UserController::class, 'destroy']);
+    });
+
+    // Categories — editor and above
+    $router->group('categories', ['middleware' => [AuthMiddleware::class]], function ($router) {
+        $router->get('/',       [CategoryController::class, 'index']);
+        $router->post('/',      [CategoryController::class, 'store']);
+        $router->get('{id}',    [CategoryController::class, 'show']);
+        $router->put('{id}',    [CategoryController::class, 'update']);
+        $router->delete('{id}', [CategoryController::class, 'destroy']);
+    });
+
+    // Tags — editor and above
+    $router->group('tags', ['middleware' => [AuthMiddleware::class]], function ($router) {
+        $router->get('/',       [TagController::class, 'index']);
+        $router->post('/',      [TagController::class, 'store']);
+        $router->get('{id}',    [TagController::class, 'show']);
+        $router->put('{id}',    [TagController::class, 'update']);
+        $router->delete('{id}', [TagController::class, 'destroy']);
     });
 
 });
