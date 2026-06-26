@@ -7,6 +7,7 @@ use App\Controllers\CategoryController;
 use App\Controllers\HealthController;
 use App\Controllers\MediaController;
 use App\Controllers\PostController;
+use App\Controllers\PublicController;
 use App\Controllers\RedirectController;
 use App\Controllers\RoleController;
 use App\Controllers\SeoController;
@@ -113,6 +114,24 @@ $router->group('api/v1', [], function ($router) {
         $router->get('/',       [RedirectController::class, 'index']);
         $router->post('/',      [RedirectController::class, 'store']);
         $router->delete('{id}', [RedirectController::class, 'destroy']);
+    });
+
+    // Public — no auth required
+    $router->group('public', [], function ($router) {
+        $router->get('posts',                 [PublicController::class, 'posts']);
+        $router->get('posts/{slug}',          [PublicController::class, 'post']);
+        $router->get('categories',            [PublicController::class, 'categories']);
+        $router->get('categories/{slug}',     [PublicController::class, 'category']);
+        $router->get('tags',                  [PublicController::class, 'tags']);
+        $router->get('tags/{slug}',           [PublicController::class, 'tag']);
+        $router->get('authors/{slug}',        [PublicController::class, 'author']);
+        $router->get('sitemap.xml',           [PublicController::class, 'sitemapIndex']);
+        $router->get('sitemap-posts.xml',     [PublicController::class, 'sitemapPosts']);
+        $router->get('sitemap-categories.xml',[PublicController::class, 'sitemapCategories']);
+        $router->get('sitemap-tags.xml',      [PublicController::class, 'sitemapTags']);
+        $router->get('sitemap-authors.xml',   [PublicController::class, 'sitemapAuthors']);
+        $router->get('rss.xml',               [PublicController::class, 'rss']);
+        $router->get('robots.txt',            [PublicController::class, 'robots']);
     });
 
 });
