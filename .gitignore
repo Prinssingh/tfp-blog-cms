@@ -1,10 +1,11 @@
 /vendor/
-/storage/cache/*
+/storage/cache/data/**
+!/storage/cache/data/.gitkeep
+/storage/cache/ratelimit/**
+!/storage/cache/ratelimit/.gitkeep
 /storage/logs/*
+!/storage/logs/.gitkeep
 /uploads/*
+!/uploads/.gitkeep
 .env
 .env.local
-
-!storage/cache/.gitkeep
-!storage/logs/.gitkeep
-!uploads/.gitkeep

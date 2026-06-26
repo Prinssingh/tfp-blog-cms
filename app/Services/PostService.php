@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Core\Cache;
 use App\Core\Database;
 use App\DTOs\CreatePostDTO;
 use App\DTOs\UpdatePostDTO;
@@ -81,6 +82,8 @@ class PostService
             entityId: $id,
         );
 
+        $this->bustCache($dto->websiteId);
+
         return $this->findById($id, $dto->websiteId);
     }
 
@@ -126,6 +129,8 @@ class PostService
             entityId: $id,
         );
 
+        $this->bustCache($websiteId, $post['slug']);
+
         return $this->findById($id, $websiteId);
     }
 
@@ -150,6 +155,8 @@ class PostService
             entityType: 'post',
             entityId: $id,
         );
+
+        $this->bustCache($websiteId, $post['slug']);
 
         return $this->findById($id, $websiteId);
     }
@@ -185,6 +192,8 @@ class PostService
             entityType: 'post',
             entityId: $id,
         );
+
+        $this->bustCache($websiteId, $post['slug']);
     }
 
     public function duplicate(int $id, int $websiteId, int $userId): array
@@ -218,5 +227,16 @@ class PostService
         }
 
         return $this->tagRepository->findOrCreateByNames($tags, $websiteId);
+    }
+
+    private function bustCache(int $websiteId, ?string $slug = null): void
+    {
+        Cache::flushTag("posts:{$websiteId}");
+        Cache::flushTag("categories:{$websiteId}");
+        Cache::flushTag("tags:{$websiteId}");
+
+        if ($slug !== null) {
+            Cache::forget("public:post:{$websiteId}:{$slug}");
+        }
     }
 }
