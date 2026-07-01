@@ -8,14 +8,20 @@ use App\Exceptions\ValidationException;
 
 class CreateWebsiteDTO
 {
-    public readonly string $name;
-    public readonly string $slug;
-    public readonly string $domain;
-    public readonly ?string $logo;
-    public readonly ?string $favicon;
-    public readonly string $timezone;
-    public readonly string $language;
-    public readonly string $status;
+    public readonly string  $name;
+    public readonly string  $slug;
+    public readonly string  $domain;
+    public readonly ?string $subdomain;
+    public readonly ?string $description;
+    public readonly ?string $logoUrl;
+    public readonly ?string $faviconUrl;
+    public readonly ?string $coverImageUrl;
+    public readonly ?string $themeColor;
+    public readonly ?string $accentColor;
+    public readonly string  $timezone;
+    public readonly string  $language;
+    public readonly string  $currency;
+    public readonly string  $status;
 
     public function __construct(array $data)
     {
@@ -29,9 +35,11 @@ class CreateWebsiteDTO
         }
 
         $slug = trim($data['slug'] ?? '');
-        if (empty($slug)) {
-            $errors['slug'][] = 'Slug is required.';
-        } elseif (!preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $slug)) {
+        if (empty($slug) && !empty($name)) {
+            $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $name));
+            $slug = trim($slug, '-');
+        }
+        if (!empty($slug) && !preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $slug)) {
             $errors['slug'][] = 'Slug must be lowercase alphanumeric with hyphens only.';
         }
 
@@ -41,21 +49,27 @@ class CreateWebsiteDTO
         }
 
         $status = $data['status'] ?? 'active';
-        if (!in_array($status, ['active', 'inactive'], true)) {
-            $errors['status'][] = 'Status must be active or inactive.';
+        if (!in_array($status, ['active', 'maintenance', 'suspended', 'archived', 'inactive'], true)) {
+            $errors['status'][] = 'Invalid status value.';
         }
 
         if (!empty($errors)) {
             throw new ValidationException($errors);
         }
 
-        $this->name     = $name;
-        $this->slug     = $slug;
-        $this->domain   = strtolower($domain);
-        $this->logo     = trim($data['logo'] ?? '') ?: null;
-        $this->favicon  = trim($data['favicon'] ?? '') ?: null;
-        $this->timezone = $data['timezone'] ?? 'Asia/Kolkata';
-        $this->language = $data['language'] ?? 'en';
-        $this->status   = $status;
+        $this->name          = $name;
+        $this->slug          = $slug ?: $name;
+        $this->domain        = strtolower($domain);
+        $this->subdomain     = trim($data['subdomain']      ?? '') ?: null;
+        $this->description   = trim($data['description']    ?? '') ?: null;
+        $this->logoUrl       = trim($data['logo_url']       ?? '') ?: null;
+        $this->faviconUrl    = trim($data['favicon_url']    ?? '') ?: null;
+        $this->coverImageUrl = trim($data['cover_image_url'] ?? '') ?: null;
+        $this->themeColor    = trim($data['theme_color']    ?? '') ?: null;
+        $this->accentColor   = trim($data['accent_color']   ?? '') ?: null;
+        $this->timezone      = $data['timezone'] ?? 'Asia/Kolkata';
+        $this->language      = $data['language'] ?? 'en';
+        $this->currency      = $data['currency'] ?? 'USD';
+        $this->status        = $status;
     }
 }

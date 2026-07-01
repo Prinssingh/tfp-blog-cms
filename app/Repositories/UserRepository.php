@@ -61,7 +61,7 @@ class UserRepository
             'SELECT u.*, r.slug AS role_slug, r.name AS role_name
              FROM users u
              JOIN roles r ON r.id = u.role_id
-             WHERE u.id = ? AND u.status = "active"
+             WHERE u.id = ?
              LIMIT 1'
         );
         $stmt->execute([$id]);

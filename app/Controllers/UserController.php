@@ -64,4 +64,25 @@ class UserController
         $this->userService->delete((int) $request->param('id'), $actorId);
         return Response::success([], 'User deleted successfully.');
     }
+
+    public function activity(Request $request): Response
+    {
+        $userId  = (int) $request->param('id');
+        $filters = [
+            'user_id' => $userId,
+            'limit'   => $request->query('limit') ?? 50,
+        ];
+        $logs = (new AuditRepository())->getActivity($filters);
+
+        $formatted = array_map(fn($log) => [
+            'id'          => $log['id'],
+            'action'      => $log['action'],
+            'entity_type' => $log['entity_type'],
+            'entity_id'   => $log['entity_id'],
+            'new_values'  => $log['new_values'] ? json_decode($log['new_values'], true) : null,
+            'created_at'  => $log['created_at'],
+        ], $logs);
+
+        return Response::success($formatted);
+    }
 }

@@ -18,7 +18,8 @@ class WebsiteService
 
     public function all(): array
     {
-        return $this->websiteRepository->all();
+        $websites = $this->websiteRepository->all();
+        return array_map([$this, 'format'], $websites);
     }
 
     public function findById(int $id): array
@@ -29,7 +30,7 @@ class WebsiteService
             throw new NotFoundException('Website not found.');
         }
 
-        return $website;
+        return $this->format($website);
     }
 
     public function create(CreateWebsiteDTO $dto): array
@@ -44,7 +45,7 @@ class WebsiteService
 
         $id = $this->websiteRepository->create($dto);
 
-        return $this->websiteRepository->findById($id);
+        return $this->format($this->websiteRepository->findById($id));
     }
 
     public function update(int $id, UpdateWebsiteDTO $dto): array
@@ -61,7 +62,7 @@ class WebsiteService
 
         $this->websiteRepository->update($id, $dto);
 
-        return $this->websiteRepository->findById($id);
+        return $this->format($this->websiteRepository->findById($id));
     }
 
     public function delete(int $id): void
@@ -73,5 +74,55 @@ class WebsiteService
         }
 
         $this->websiteRepository->delete($id);
+    }
+
+    public function getSettings(int $id): array
+    {
+        if ($this->websiteRepository->findById($id) === null) {
+            throw new NotFoundException('Website not found.');
+        }
+
+        return $this->websiteRepository->getSettings($id);
+    }
+
+    public function updateSettings(int $id, array $settings): array
+    {
+        if ($this->websiteRepository->findById($id) === null) {
+            throw new NotFoundException('Website not found.');
+        }
+
+        $current  = $this->websiteRepository->getSettings($id);
+        $merged   = array_merge($current, $settings);
+
+        $this->websiteRepository->updateSettings($id, $merged);
+
+        return $merged;
+    }
+
+    private function format(?array $website): array
+    {
+        if ($website === null) {
+            return [];
+        }
+
+        return [
+            'id'              => $website['id'],
+            'name'            => $website['name'],
+            'slug'            => $website['slug'],
+            'domain'          => $website['domain'],
+            'subdomain'       => $website['subdomain']      ?? null,
+            'description'     => $website['description']    ?? null,
+            'logo_url'        => $website['logo_url']       ?? $website['logo'] ?? null,
+            'favicon_url'     => $website['favicon_url']    ?? $website['favicon'] ?? null,
+            'cover_image_url' => $website['cover_image_url'] ?? null,
+            'theme_color'     => $website['theme_color']    ?? null,
+            'accent_color'    => $website['accent_color']   ?? null,
+            'timezone'        => $website['timezone'],
+            'language'        => $website['language'],
+            'currency'        => $website['currency']       ?? 'USD',
+            'status'          => $website['status'],
+            'created_at'      => $website['created_at'],
+            'updated_at'      => $website['updated_at'],
+        ];
     }
 }

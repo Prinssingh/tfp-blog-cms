@@ -106,18 +106,18 @@ class UserService
     private function formatUser(array $user): array
     {
         return [
-            'id'          => $user['id'],
-            'name'        => $user['name'],
-            'slug'        => $user['slug'],
-            'email'       => $user['email'],
-            'avatar'      => $user['avatar'],
-            'bio'         => $user['bio'],
-            'role'        => $user['role_slug'],
-            'role_name'   => $user['role_name'],
-            'website_id'  => $user['website_id'],
-            'status'      => $user['status'],
+            'id'            => $user['id'],
+            'name'          => $user['name'],
+            'slug'          => $user['slug'],
+            'email'         => $user['email'],
+            'avatar'        => $user['avatar'],
+            'bio'           => $user['bio'],
+            'role'          => $user['role_slug'],
+            'role_name'     => $user['role_name'],
+            'website_id'    => $user['website_id'],
+            'status'        => $user['status'],
             'last_login_at' => $user['last_login_at'],
-            'created_at'  => $user['created_at'],
+            'created_at'    => $user['created_at'],
         ];
     }
 }

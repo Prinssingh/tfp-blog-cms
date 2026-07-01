@@ -122,16 +122,23 @@ class AuthService
 
     private function formatUser(array $user): array
     {
+        $roleRepo    = new \App\Repositories\RoleRepository();
+        $role        = $roleRepo->findBySlug($user['role_slug']);
+        $permissions = ($user['role_slug'] === 'super_admin' || $role === null)
+            ? ['*']
+            : $roleRepo->permissionsForRole((int) $role['id']);
+
         return [
-            'id'         => $user['id'],
-            'name'       => $user['name'],
-            'slug'       => $user['slug'],
-            'email'      => $user['email'],
-            'avatar'     => $user['avatar'],
-            'bio'        => $user['bio'],
-            'role'       => $user['role_slug'],
-            'role_name'  => $user['role_name'],
-            'website_id' => $user['website_id'],
+            'id'          => $user['id'],
+            'name'        => $user['name'],
+            'slug'        => $user['slug'],
+            'email'       => $user['email'],
+            'avatar'      => $user['avatar'],
+            'bio'         => $user['bio'],
+            'role'        => $user['role_slug'],
+            'role_name'   => $user['role_name'],
+            'website_id'  => $user['website_id'],
+            'permissions' => $permissions,
         ];
     }
 }

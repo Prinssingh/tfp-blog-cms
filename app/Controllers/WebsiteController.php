@@ -48,6 +48,21 @@ class WebsiteController
     public function destroy(Request $request): Response
     {
         $this->websiteService->delete((int) $request->param('id'));
-        return Response::success([], 'Website deleted successfully.');
+        return Response::success([], 'Website archived successfully.');
+    }
+
+    public function getSettings(Request $request): Response
+    {
+        $settings = $this->websiteService->getSettings((int) $request->param('id'));
+        return Response::success($settings);
+    }
+
+    public function updateSettings(Request $request): Response
+    {
+        $settings = $this->websiteService->updateSettings(
+            (int) $request->param('id'),
+            $request->body(),
+        );
+        return Response::success($settings, 'Settings updated successfully.');
     }
 }

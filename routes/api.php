@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Controllers\AnalyticsController;
+use App\Controllers\AuditController;
 use App\Controllers\AuthController;
 use App\Controllers\CategoryController;
 use App\Controllers\HealthController;
@@ -47,7 +48,7 @@ $router->group('api/v1', [], function ($router) {
         [AuthMiddleware::class, SuperAdminMiddleware::class],
     );
 
-    // Websites — super admin only
+    // Websites — super admin only (CRUD), website admin can read own website + manage settings
     $router->group('websites', ['middleware' => [AuthMiddleware::class, SuperAdminMiddleware::class]], function ($router) {
         $router->get('/',       [WebsiteController::class, 'index']);
         $router->post('/',      [WebsiteController::class, 'store']);
@@ -56,14 +57,28 @@ $router->group('api/v1', [], function ($router) {
         $router->delete('{id}', [WebsiteController::class, 'destroy']);
     });
 
+    // Website settings — website admin and above
+    $router->group('websites', ['middleware' => [AuthMiddleware::class, WebsiteAdminMiddleware::class]], function ($router) {
+        $router->get('{id}/settings', [WebsiteController::class, 'getSettings']);
+        $router->put('{id}/settings', [WebsiteController::class, 'updateSettings']);
+    });
+
     // Users — website admin and above
     $router->group('users', ['middleware' => [AuthMiddleware::class, WebsiteAdminMiddleware::class]], function ($router) {
-        $router->get('/',       [UserController::class, 'index']);
-        $router->post('/',      [UserController::class, 'store']);
-        $router->get('{id}',    [UserController::class, 'show']);
-        $router->put('{id}',    [UserController::class, 'update']);
-        $router->delete('{id}', [UserController::class, 'destroy']);
+        $router->get('/',                [UserController::class, 'index']);
+        $router->post('/',               [UserController::class, 'store']);
+        $router->get('{id}',             [UserController::class, 'show']);
+        $router->put('{id}',             [UserController::class, 'update']);
+        $router->delete('{id}',          [UserController::class, 'destroy']);
+        $router->get('{id}/activity',    [UserController::class, 'activity']);
     });
+
+    // Audit logs — website admin and above
+    $router->get(
+        'audit-logs',
+        [AuditController::class, 'index'],
+        [AuthMiddleware::class, WebsiteAdminMiddleware::class],
+    );
 
     // Categories — editor and above
     $router->group('categories', ['middleware' => [AuthMiddleware::class]], function ($router) {
@@ -94,14 +109,27 @@ $router->group('api/v1', [], function ($router) {
 
     // Posts
     $router->group('posts', ['middleware' => [AuthMiddleware::class]], function ($router) {
-        $router->get('/',               [PostController::class, 'index']);
-        $router->post('/',              [PostController::class, 'store']);
-        $router->get('{id}',            [PostController::class, 'show']);
-        $router->put('{id}',            [PostController::class, 'update']);
-        $router->delete('{id}',         [PostController::class, 'destroy']);
-        $router->post('{id}/publish',   [PostController::class, 'publish']);
-        $router->post('{id}/schedule',  [PostController::class, 'schedule']);
-        $router->post('{id}/duplicate', [PostController::class, 'duplicate']);
+        $router->get('/',                                        [PostController::class, 'index']);
+        $router->post('/',                                       [PostController::class, 'store']);
+        $router->get('trash',                                    [PostController::class, 'trash']);
+        $router->get('status-counts',                            [PostController::class, 'statusCounts']);
+        $router->get('{id}',                                     [PostController::class, 'show']);
+        $router->put('{id}',                                     [PostController::class, 'update']);
+        $router->delete('{id}',                                  [PostController::class, 'destroy']);
+        $router->delete('{id}/force',                            [PostController::class, 'forceDelete']);
+        $router->post('{id}/restore',                            [PostController::class, 'restoreFromTrash']);
+        $router->post('{id}/submit-review',                      [PostController::class, 'submitReview']);
+        $router->post('{id}/start-review',                       [PostController::class, 'startReview']);
+        $router->post('{id}/approve',                            [PostController::class, 'approve']);
+        $router->post('{id}/reject',                             [PostController::class, 'reject']);
+        $router->post('{id}/publish',                            [PostController::class, 'publish']);
+        $router->post('{id}/schedule',                           [PostController::class, 'schedule']);
+        $router->post('{id}/archive',                            [PostController::class, 'archive']);
+        $router->post('{id}/duplicate',                          [PostController::class, 'duplicate']);
+        $router->post('{id}/preview',                            [PostController::class, 'preview']);
+        $router->get('{id}/revisions',                           [PostController::class, 'revisions']);
+        $router->get('{id}/revisions/{revision_id}',             [PostController::class, 'revision']);
+        $router->post('{id}/revisions/{revision_id}/restore',    [PostController::class, 'restoreRevision']);
     });
 
     // SEO metadata
