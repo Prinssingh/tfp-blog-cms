@@ -80,22 +80,30 @@ $router->group('api/v1', [], function ($router) {
         [AuthMiddleware::class, WebsiteAdminMiddleware::class],
     );
 
-    // Categories — editor and above
+    // Categories
     $router->group('categories', ['middleware' => [AuthMiddleware::class]], function ($router) {
-        $router->get('/',       [CategoryController::class, 'index']);
-        $router->post('/',      [CategoryController::class, 'store']);
-        $router->get('{id}',    [CategoryController::class, 'show']);
-        $router->put('{id}',    [CategoryController::class, 'update']);
-        $router->delete('{id}', [CategoryController::class, 'destroy']);
+        $router->get('/',              [CategoryController::class, 'index']);
+        $router->post('/',             [CategoryController::class, 'store']);
+        $router->get('trash',          [CategoryController::class, 'trash']);
+        $router->post('merge',         [CategoryController::class, 'merge']);
+        $router->get('{id}',           [CategoryController::class, 'show']);
+        $router->put('{id}',           [CategoryController::class, 'update']);
+        $router->delete('{id}',        [CategoryController::class, 'destroy']);
+        $router->delete('{id}/force',  [CategoryController::class, 'forceDelete']);
+        $router->post('{id}/restore',  [CategoryController::class, 'restore']);
     });
 
-    // Tags — editor and above
+    // Tags
     $router->group('tags', ['middleware' => [AuthMiddleware::class]], function ($router) {
-        $router->get('/',       [TagController::class, 'index']);
-        $router->post('/',      [TagController::class, 'store']);
-        $router->get('{id}',    [TagController::class, 'show']);
-        $router->put('{id}',    [TagController::class, 'update']);
-        $router->delete('{id}', [TagController::class, 'destroy']);
+        $router->get('/',              [TagController::class, 'index']);
+        $router->post('/',             [TagController::class, 'store']);
+        $router->get('trash',          [TagController::class, 'trash']);
+        $router->post('merge',         [TagController::class, 'merge']);
+        $router->get('{id}',           [TagController::class, 'show']);
+        $router->put('{id}',           [TagController::class, 'update']);
+        $router->delete('{id}',        [TagController::class, 'destroy']);
+        $router->delete('{id}/force',  [TagController::class, 'forceDelete']);
+        $router->post('{id}/restore',  [TagController::class, 'restore']);
     });
 
     // Media
