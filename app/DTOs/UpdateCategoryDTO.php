@@ -71,12 +71,12 @@ class UpdateCategoryDTO
         $this->parentId           = array_key_exists('parent_id', $data)
                                       ? (($data['parent_id'] !== null && $data['parent_id'] !== '') ? (int) $data['parent_id'] : null)
                                       : null;
-        $this->description        = array_key_exists('description', $data)        ? (trim($data['description']) ?: null) : null;
-        $this->shortDescription   = array_key_exists('short_description', $data)  ? (trim($data['short_description']) ?: null) : null;
-        $this->imageUrl           = array_key_exists('image_url', $data)          ? (trim($data['image_url']) ?: null) : null;
-        $this->imageAlt           = array_key_exists('image_alt', $data)          ? (trim($data['image_alt']) ?: null) : null;
-        $this->coverImageUrl      = array_key_exists('cover_image_url', $data)    ? (trim($data['cover_image_url']) ?: null) : null;
-        $this->icon               = array_key_exists('icon', $data)               ? (trim($data['icon']) ?: null) : null;
+        $this->description        = array_key_exists('description', $data)         ? (is_string($data['description'])         ? (trim($data['description'])         ?: null) : null) : null;
+        $this->shortDescription   = array_key_exists('short_description', $data)  ? (is_string($data['short_description'])  ? (trim($data['short_description'])  ?: null) : null) : null;
+        $this->imageUrl           = array_key_exists('image_url', $data)          ? (is_string($data['image_url'])          ? (trim($data['image_url'])          ?: null) : null) : null;
+        $this->imageAlt           = array_key_exists('image_alt', $data)          ? (is_string($data['image_alt'])          ? (trim($data['image_alt'])          ?: null) : null) : null;
+        $this->coverImageUrl      = array_key_exists('cover_image_url', $data)    ? (is_string($data['cover_image_url'])    ? (trim($data['cover_image_url'])    ?: null) : null) : null;
+        $this->icon               = array_key_exists('icon', $data)               ? (is_string($data['icon'])               ? (trim($data['icon'])               ?: null) : null) : null;
         $this->sortOrder          = isset($data['sort_order'])                     ? (int) $data['sort_order'] : null;
         $this->status             = $status;
         $this->showInMenu         = isset($data['show_in_menu'])         ? (bool) $data['show_in_menu'] : null;
@@ -85,17 +85,17 @@ class UpdateCategoryDTO
         $this->showInSidebar      = isset($data['show_in_sidebar'])      ? (bool) $data['show_in_sidebar'] : null;
         $this->isFeatured         = isset($data['is_featured'])          ? (bool) $data['is_featured'] : null;
         $this->isHidden           = isset($data['is_hidden'])            ? (bool) $data['is_hidden'] : null;
-        $this->seoTitle           = array_key_exists('seo_title', $data)          ? (trim($data['seo_title']) ?: null) : null;
-        $this->seoDescription     = array_key_exists('seo_description', $data)    ? (trim($data['seo_description']) ?: null) : null;
-        $this->focusKeyword       = array_key_exists('focus_keyword', $data)      ? (trim($data['focus_keyword']) ?: null) : null;
-        $this->canonicalUrl       = array_key_exists('canonical_url', $data)      ? (trim($data['canonical_url']) ?: null) : null;
-        $this->robotsDirective    = array_key_exists('robots_directive', $data)   ? (trim($data['robots_directive']) ?: 'index, follow') : null;
-        $this->ogTitle            = array_key_exists('og_title', $data)           ? (trim($data['og_title']) ?: null) : null;
-        $this->ogDescription      = array_key_exists('og_description', $data)     ? (trim($data['og_description']) ?: null) : null;
-        $this->ogImage            = array_key_exists('og_image', $data)           ? (trim($data['og_image']) ?: null) : null;
-        $this->twitterTitle       = array_key_exists('twitter_title', $data)      ? (trim($data['twitter_title']) ?: null) : null;
-        $this->twitterDescription = array_key_exists('twitter_description', $data)? (trim($data['twitter_description']) ?: null) : null;
-        $this->twitterImage       = array_key_exists('twitter_image', $data)      ? (trim($data['twitter_image']) ?: null) : null;
+        $this->seoTitle           = array_key_exists('seo_title', $data)          ? (is_string($data['seo_title'])          ? (trim($data['seo_title'])          ?: null) : null) : null;
+        $this->seoDescription     = array_key_exists('seo_description', $data)    ? (is_string($data['seo_description'])    ? (trim($data['seo_description'])    ?: null) : null) : null;
+        $this->focusKeyword       = array_key_exists('focus_keyword', $data)      ? (is_string($data['focus_keyword'])      ? (trim($data['focus_keyword'])      ?: null) : null) : null;
+        $this->canonicalUrl       = array_key_exists('canonical_url', $data)      ? (is_string($data['canonical_url'])      ? (trim($data['canonical_url'])      ?: null) : null) : null;
+        $this->robotsDirective    = array_key_exists('robots_directive', $data)   ? (is_string($data['robots_directive'])   ? (trim($data['robots_directive'])   ?: 'index, follow') : null) : null;
+        $this->ogTitle            = array_key_exists('og_title', $data)           ? (is_string($data['og_title'])           ? (trim($data['og_title'])           ?: null) : null) : null;
+        $this->ogDescription      = array_key_exists('og_description', $data)     ? (is_string($data['og_description'])     ? (trim($data['og_description'])     ?: null) : null) : null;
+        $this->ogImage            = array_key_exists('og_image', $data)           ? (is_string($data['og_image'])           ? (trim($data['og_image'])           ?: null) : null) : null;
+        $this->twitterTitle       = array_key_exists('twitter_title', $data)      ? (is_string($data['twitter_title'])      ? (trim($data['twitter_title'])      ?: null) : null) : null;
+        $this->twitterDescription = array_key_exists('twitter_description', $data)? (is_string($data['twitter_description'])? (trim($data['twitter_description'])?: null) : null) : null;
+        $this->twitterImage       = array_key_exists('twitter_image', $data)      ? (is_string($data['twitter_image'])      ? (trim($data['twitter_image'])      ?: null) : null) : null;
         $this->includeInSitemap   = isset($data['include_in_sitemap'])   ? (bool) $data['include_in_sitemap'] : null;
         $this->sitemapPriority    = isset($data['sitemap_priority'])      ? min(1.0, max(0.0, (float) $data['sitemap_priority'])) : null;
         $this->changeFrequency    = array_key_exists('change_frequency', $data)   ? ($data['change_frequency'] ?: null) : null;

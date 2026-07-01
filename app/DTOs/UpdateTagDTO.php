@@ -53,14 +53,14 @@ class UpdateTagDTO
         $this->updatedBy       = $userId;
         $this->name            = $name ?: null;
         $this->slug            = $slug ?: null;
-        $this->description     = array_key_exists('description', $data)     ? (trim($data['description']) ?: null) : null;
-        $this->color           = array_key_exists('color', $data)           ? ($color ?: null) : null;
-        $this->icon            = array_key_exists('icon', $data)            ? (trim($data['icon']) ?: null) : null;
+        $this->description     = array_key_exists('description', $data)      ? (is_string($data['description'])      ? (trim($data['description'])      ?: null) : null) : null;
+        $this->color           = array_key_exists('color', $data)            ? ($color ?: null) : null;
+        $this->icon            = array_key_exists('icon', $data)             ? (is_string($data['icon'])             ? (trim($data['icon'])             ?: null) : null) : null;
         $this->status          = $status;
-        $this->seoTitle        = array_key_exists('seo_title', $data)       ? (trim($data['seo_title']) ?: null) : null;
-        $this->seoDescription  = array_key_exists('seo_description', $data) ? (trim($data['seo_description']) ?: null) : null;
-        $this->focusKeyword    = array_key_exists('focus_keyword', $data)   ? (trim($data['focus_keyword']) ?: null) : null;
-        $this->canonicalUrl    = array_key_exists('canonical_url', $data)   ? (trim($data['canonical_url']) ?: null) : null;
-        $this->robotsDirective = array_key_exists('robots_directive', $data)? (trim($data['robots_directive']) ?: null) : null;
+        $this->seoTitle        = array_key_exists('seo_title', $data)        ? (is_string($data['seo_title'])        ? (trim($data['seo_title'])        ?: null) : null) : null;
+        $this->seoDescription  = array_key_exists('seo_description', $data)  ? (is_string($data['seo_description'])  ? (trim($data['seo_description'])  ?: null) : null) : null;
+        $this->focusKeyword    = array_key_exists('focus_keyword', $data)    ? (is_string($data['focus_keyword'])    ? (trim($data['focus_keyword'])    ?: null) : null) : null;
+        $this->canonicalUrl    = array_key_exists('canonical_url', $data)    ? (is_string($data['canonical_url'])    ? (trim($data['canonical_url'])    ?: null) : null) : null;
+        $this->robotsDirective = array_key_exists('robots_directive', $data) ? (is_string($data['robots_directive']) ? (trim($data['robots_directive']) ?: null) : null) : null;
     }
 }
